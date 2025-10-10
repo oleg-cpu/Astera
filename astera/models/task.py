@@ -3,12 +3,13 @@ import datetime
 
 
 class Task:
-    _id_task: uuid.UUID = None
-    _title: str = None
-    _description: str = None
-    _status: str = None
-    _creation_date: datetime.datetime = None
-    _due_date: datetime.datetime = None
+    _id_task: uuid.UUID
+    _title: str
+    _description: str
+    _status: str
+    _creation_date: datetime.datetime
+    _due_date: datetime.datetime
+    ALLOWED_STATUSES = ("To Do", "In Progress", "Done")
 
     def __init__(
         self,
@@ -20,9 +21,26 @@ class Task:
         self._id_task = uuid.uuid4()
         self.title = title
         self.description = description
-        self._status = status
+        self.status = status
         self._creation_date = datetime.datetime.now()
-        self._due_date = due_date
+        self.due_date = due_date
+
+    def __repr__(self):
+
+        return (
+            f"Task("
+            f"title={self.title !r}, "
+            f"description={self.description !r}, "
+            f"status={self.status !r}, "
+            f"due_date={self.due_date !r})"
+        )
+
+    def __str__(self):
+        if self.due_date is None:
+            due_date_str = "Due date not set"
+        else:
+            due_date_str = self.due_date.strftime("%d.%m.%Y")
+        return f"Task title: {self.title} Status name: {self.status}. Dedline: {due_date_str}"
 
     @property
     def title(self):
@@ -58,8 +76,52 @@ class Task:
             else:
                 self._description = description
 
+    @property
+    def status(self):
+        return self._status
 
-# my_task = Task(
-#    title="Test Task", status="Done", due_date=datetime.datetime(2025, 12, 15)
-# )
-# print(my_task._description)
+    @status.setter
+    def status(self, status: str):
+        status = status.strip().title()
+        if not status:
+            raise ValueError("Status can't be empty")
+        elif status not in self.ALLOWED_STATUSES:
+            raise ValueError("Status doesn't exists")
+        else:
+            self._status = status
+
+    @property
+    def due_date(self):
+        return self._due_date
+
+    @due_date.setter
+    def due_date(self, due_date: datetime.datetime):
+        if due_date is None:
+            self._due_date = due_date
+        elif type(due_date) is not datetime.datetime:
+            raise TypeError("incorrect format date and time")
+        elif due_date < datetime.datetime.now():
+            raise ValueError("Due date cannot be in the past")
+        else:
+            self._due_date = due_date
+
+    def to_dict(self):
+
+        description_str = None
+        due_date_str = None
+
+        if self.description is not None:
+            description_str = str(self.description)
+
+        if self.due_date is not None:
+            due_date_str = str(self.due_date)
+
+        task_data = {
+            "id_task": str(self._id_task),
+            "title": self.title,
+            "description": description_str,
+            "status": self.status,
+            "creation_date": str(self._creation_date),
+            "due_date": due_date_str,
+        }
+        return task_data

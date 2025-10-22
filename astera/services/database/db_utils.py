@@ -22,12 +22,13 @@ def connect_to_db():
 
 def create_tables(connect: Connection):
     drop_tables = """
-    DROP TABLE IF EXISTS users;
+    DROP TABLE IF EXISTS users CASCADE;
     DROP TABLE IF EXISTS tasks;
     """
     users_table = """
     CREATE TABLE users(
-        user_id SERIAL PRIMARY KEY
+        user_id SERIAL PRIMARY KEY,
+        user_name VARCHAR(50) UNIQUE NOT NULL
     );
     
     """
@@ -55,3 +56,9 @@ def create_tables(connect: Connection):
     except Exception as e:
         print(f"Error during connection_table {e}")
         connect.rollback()
+
+if __name__ == "__main__":
+    db_connect = connect_to_db()
+    if db_connect:
+        create_tables(db_connect)
+        db_connect.close()

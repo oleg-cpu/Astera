@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 from astera.services.database.db_utils import connect_to_db
 
 
-class TaskManger:
+class TaskManager:
 
     def _execute_query(
         self,
@@ -109,7 +109,7 @@ class TaskManger:
             "DELETE FROM tasks Where task_id =%s",
             (id_task,),
             fetch_one=False,
-            commit=True
+            commit=True,
         )
 
 
@@ -123,10 +123,10 @@ if __name__ == "__main__":
             status="To Do",
         )
         print("Add task to DB")
-        manager = TaskManger()
+        manager = TaskManager()
         manager.add_task(task=first_test_task, user_id=1)
         print(f"Successful added task to DB {first_test_task}")
-        
+
         print("Find task in DB")
         existing_task_in_db = first_test_task._id_task
         found_task = manager.get_task_by_id(existing_task_in_db)

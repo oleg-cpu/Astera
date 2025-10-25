@@ -30,7 +30,11 @@ class TestTask(unittest.TestCase):
     def test_description_validation_with_only_spaces(self):
         with self.assertRaises(ValueError) as cm:
             Task(
+<<<<<<< HEAD
                 title="Test tittle" ,
+=======
+                title="Test tittle",
+>>>>>>> feature/data-base
                 description="   ",
                 status="To Do",
                 due_date=datetime.datetime.now(),
@@ -107,7 +111,11 @@ class TestTask(unittest.TestCase):
             "description": "Description",
             "status": "To Do",
             "creation_date": str(task_object._creation_date),
+<<<<<<< HEAD
             "due_date": str(datetime.datetime(2050, 11 ,11)),
+=======
+            "due_date": str(datetime.datetime(2050, 11, 11)),
+>>>>>>> feature/data-base
         }
 
         self.assertIsInstance(task_object.to_dict(), dict, "Must return dict type")

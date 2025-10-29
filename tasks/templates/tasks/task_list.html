@@ -1,0 +1,7 @@
+<h1>Task list</h1>
+
+{% for task in object_list %}
+<p>Task: {{task.title}} (ID: {{task.id_task}})</p>
+{% empty %}
+<p>Doesn't exists tasks in DB</p>
+{% endfor %}

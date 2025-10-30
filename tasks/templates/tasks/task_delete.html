@@ -1,0 +1,17 @@
+<h1>Confirm to delete task</h1>
+
+<p>Are you sure that you want to delete task: <strong>"{{ object.title }}"</strong>?</p>
+<p>This action is irreversible.</p>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <button type="submit" style="background-color: red; color: white; padding: 10px;">
+        Yes, Delete this task
+    </button>
+
+    <a href="{% url 'task-detail' object.pk %}" style="margin-left: 20px;">
+        Cancel
+    </a>
+</form>

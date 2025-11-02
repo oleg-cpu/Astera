@@ -12,7 +12,7 @@ from .forms import TaskForm
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = "tasks/task_list.html"
-
+    
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task

@@ -54,6 +54,49 @@ class TaskViewTest(TestCase):
         new_task = Task.objects.get(title="create test task")
         self.assertEqual(new_task.user_id, self.user)
 
+    def test_task_create_prevents_past_due_date(self):
+        """Test that attempting to create a task with a past due_date fails validation."""
+        self.client.login(username="testUser", password="Password123")
+        past_date = date.today() - timedelta(days=1)
+
+        form_data = {
+            "title": "Invalid Past Date Task",
+            "description": "This task should fail validation.",
+            "status": "To Do",
+            "due_date": past_date.strftime("%Y-%m-%d"),
+        }
+
+        response = self.client.post(self.create_url, data=form_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response.context['form'],
+            "due_date",
+            "The end date cannot be in the past. Please select today's date or a future date.",
+        )
+        self.assertEqual(Task.objects.count(), 1)
+
+    def test_task_update_prevents_past_due_date(self):
+
+        self.client.login(username="testUser", password="Password123")
+        past_date = date.today() - timedelta(days=1)
+
+        invalid_update_data = {
+            "title": "Attempted Invalid Update",
+            "description": "Updated Description",
+            "status": "In Progress",
+            "due_date": past_date.strftime("%Y-%m-%d"),
+        }
+
+        response = self.client.post(self.update_url, data=invalid_update_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response.context['form'],
+            "due_date",
+            "The end date cannot be in the past. Please select today's date or a future date.",
+        )
+        self.test_task.refresh_from_db()
+        self.assertNotEqual(self.test_task.title, invalid_update_data["title"])
+
     def test_detail_view(self):
         loged_in = self.client.login(username="testUser", password="Password123")
         response = self.client.get(self.detail_url)

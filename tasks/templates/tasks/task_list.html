@@ -1,27 +1,81 @@
-<header>
-    {% if user.is_authenticated %}
-    <p>
-        You login as: <strong>{{ user.username }}</strong>.
-    
-    <form action="{% url 'logout' %}" method="post" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit" style="background: none; border: none; color: inherit; cursor: pointer; padding: 0;">
-            Logout
-        </button>
-    </form>
-    </p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Astera - My Tasks{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📌 My Task List</h2>
+        <a href="{% url 'create-task' %}" class="btn btn-primary btn-lg shadow-sm">
+            ➕ Create New Task
+        </a>
+    </div>
+
+    {% if tasks %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm bg-white rounded">
+            <thead class="table-info">
+                <tr>
+                    <th>Title</th>
+                    <th class="text-center">Status</th>
+                    <th>Created On</th>
+                    <th>Due Date</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr class="{% if task.status == 'Done' %}table-success{% endif %}">
+                    <td>
+                        <a href="{% url 'task-detail' task.id_task %}" class="text-decoration-none">
+                            <span
+                                class="{% if task.status == 'Done' %}text-decoration-line-through text-muted{% endif %}">
+                                {{ task.title }}
+                            </span>
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge 
+                            {% if task.status == 'Done' %}bg-success
+                            {% elif task.status == 'In Progress' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ task.status }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ task.creation_date|date:"d M Y" }}
+                    </td>
+                    <td>
+                        <strong
+                            class="{% if task.due_date|date:'Y-m-d' > 'now'|date:'Y-m-d' and not task.status == 'Done' %}text-warning{% endif %}">
+                            {{ task.due_date|date:"d M Y" }}
+                        </strong>
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'task-update' task.id_task %}" class="btn btn-sm **btn-secondary**"
+                            title="Edit">
+                            ✏️
+                        </a>
+                        <a href="{% url 'task-delete' task.id_task %}" class="btn btn-sm **btn-secondary**" title="Delete">
+                            🗑️
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     {% else %}
-    <p>
-        You are not loged. <a href="{% url 'login' %}">Login</a>
-    </p>
+    <div class="alert alert-info text-center shadow-sm" role="alert">
+        <h4 class="alert-heading">No tasks yet! 🎉</h4>
+        <p>Your task list is empty. Start by creating a new task!</p>
+        <hr>
+        <a href="{% url 'create-task' %}" class="btn btn-info text-white">
+            Create First Task
+        </a>
+    </div>
     {% endif %}
-</header>
-
-
-<h1>Task list</h1>
-
-{% for task in object_list %}
-<p>Task: {{task.title}} (ID: {{task.id_task}})</p>
-{% empty %}
-<p>Doesn't exists tasks in DB</p>
-{% endfor %}
+</div>
+{% endblock content %}

@@ -1,2 +1,16 @@
-<h1>You logded out</h1>
-<p><a href="{% url 'login' %}">login again</a></p>
+{% extends 'base.html' %}
+
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="alert alert-success mt-5 shadow" role="alert">
+            <h4 class="alert-heading">👋 Successfully Logged Out</h4>
+            <p>Thank you for using the Astera. You have been successfully logged out of your account.</p>
+            <hr>
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg mt-2">Log In Again</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

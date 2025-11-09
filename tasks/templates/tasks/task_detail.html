@@ -1,19 +1,53 @@
-<h1>Detail of task: {{ object.title }}</h1>
-<p>----------------------------------------</p>
+{% extends 'base.html' %}
 
-<p><strong>ID task:</strong> {{ object.id_task }}</p>
-<p><strong>Description:</strong> {{ object.description }}</p>
-<p><strong>Status:</strong> {{ object.status }}</p>
-<p><strong>Due date:</strong> {{ object.due_date }}</p>
-<p><strong>Created:</strong> {{ object.creation_date }}</p>
+{% block title %}{{ object.title }}{% endblock %}
 
-<p><strong>User (ID):</strong> {{ object.user_id }}</p>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">👁️ Task Details</h3>
+                <a href="{% url 'task-list' %}" class="btn btn-sm btn-light">Back to List</a>
+            </div>
+            <div class="card-body">
 
-<hr>
-<a href="{% url 'task-list' %}">Back to the task list</a>
+                <h2 class="card-title">{{ object.title }}</h2>
+                <hr>
 
-<p>
-    <a href="{% url 'task-update' object.pk %}">
-        Edit task
-    </a>
-</p>
+                <p class="card-text">
+                    <strong>Description:</strong>
+                    {% if object.description %}
+                    {{ object.description }}
+                    {% else %}
+                    <em class="text-muted">No description provided.</em>
+                    {% endif %}
+                </p>
+
+                <p class="card-text">
+                    <strong>Status:</strong>
+                    <span class="badge 
+                        {% if object.status == 'Done' %}bg-success
+                        {% elif object.status == 'In Progress' %}bg-warning text-dark
+                        {% else %}bg-secondary{% endif %}">
+                        {{ object.status }}
+                    </span>
+                </p>
+
+                <p class="card-text">
+                    <strong>Creation Date:</strong> {{ object.creation_date|date:"F d, Y, H:i" }}
+                </p>
+
+                <p class="card-text">
+                    <strong>Due Date:</strong> {{ object.due_date|date:"F d, Y" }}
+                </p>
+
+            </div>
+            <div class="card-footer d-flex justify-content-end">
+                <a href="{% url 'task-update' object.id_task %}" class="btn btn-info text-white me-2">✏️ Edit</a>
+                <a href="{% url 'task-delete' object.id_task %}" class="btn btn-danger">🗑️ Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

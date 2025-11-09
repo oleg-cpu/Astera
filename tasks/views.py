@@ -12,7 +12,12 @@ from .forms import TaskForm
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = "tasks/task_list.html"
-    
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        return self.model.objects.filter(user_id=self.request.user).order_by(
+            "creation_date"
+        )
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
@@ -30,6 +35,9 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "tasks/task_detail.html"
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user_id=self.request.user)
+
 
 class TaskUpdateView(LoginRequiredMixin, UpdateView):
     model = Task
@@ -37,8 +45,14 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "tasks/task_update_form.html"
     success_url = reverse_lazy("task-list")
 
+    def get_queryset(self):
+        return super().get_queryset().filter(user_id=self.request.user)
+
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
     model = Task
     template_name = "tasks/task_delete.html"
     success_url = reverse_lazy("task-list")
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user_id=self.request.user)

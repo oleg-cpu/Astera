@@ -1,6 +1,15 @@
 version: '3.8'
 
 services:
+  reverse-proxy:
+    image: nginx:alpine
+    container_name: reverse-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - astera-backened
   postgres:
     image: postgres:latest
     container_name: postgres_db
@@ -16,7 +25,7 @@ services:
   astera-backened: 
     build:
       context: .
-    container_name: astera_backened
+    container_name: astera-backened
     volumes:
       - .:/app
     depends_on:
@@ -27,7 +36,6 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
-    command: tail -f /dev/null
 
   pgadmin: 
     image: dpage/pgadmin4:latest

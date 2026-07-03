@@ -2,3 +2,4 @@ psycopg
 Django==5.2.7
 python-decouple
 django-widget-tweaks
+gunicorn>=26.0.0

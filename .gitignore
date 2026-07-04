@@ -119,3 +119,13 @@ dmypy.json
 
 #Pycharm IDE
 .idea
+
+#Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json

@@ -77,7 +77,6 @@ class TaskViewTest(TestCase):
         self.assertEqual(Task.objects.count(), 1)
 
     def test_task_update_prevents_past_due_date(self):
-
         self.client.login(username="testUser", password="Password123")
         past_date = date.today() - timedelta(days=1)
 

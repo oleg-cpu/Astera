@@ -5,6 +5,6 @@ User = get_user_model()
 
 
 class CustomUserCreationForm(UserCreationForm):
-    class Meta(UserCreationForm.Meta): # type: ignore[name-defined]
+    class Meta(UserCreationForm.Meta):  # type: ignore[name-defined]
         model = User
         fields = ("username", "email")

@@ -20,6 +20,7 @@ repos:
       - id: mypy
         additional_dependencies:
           - django-stubs==5.1.1
+          - django-widget-tweaks
           - psycopg2-binary
           - python-decouple
         args: [--config-file=pyproject.toml]

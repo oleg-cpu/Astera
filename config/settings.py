@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY", default='django-insecure-mock-key-for-mypy')
+SECRET_KEY = config("SECRET_KEY", default="django-insecure-mock-key-for-mypy")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -81,11 +81,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME", default='mock_db'),
-        "USER": config("DB_USER", default='mock_user'),
-        "PASSWORD": config("DB_PASS", default='mock_pwd'),
-        "HOST": config("DB_HOST", default='localhost'),
-        "PORT": config("DB_PORT", default='5432'),
+        "NAME": config("DB_NAME", default="mock_db"),
+        "USER": config("DB_USER", default="mock_user"),
+        "PASSWORD": config("DB_PASS", default="mock_pwd"),
+        "HOST": config("DB_HOST", default="localhost"),
+        "PORT": config("DB_PORT", default="5432"),
     }
 }
 

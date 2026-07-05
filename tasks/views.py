@@ -45,7 +45,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().get_queryset().filter(user_id=self.request.user)
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView): # type: ignore[misc]
+class TaskDeleteView(LoginRequiredMixin, DeleteView):  # type: ignore[misc]
     model = Task
     template_name = "tasks/task_delete.html"
     success_url = reverse_lazy("task-list")

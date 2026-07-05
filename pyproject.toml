@@ -1,0 +1,35 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+exclude = [
+    "**/migrations/*.py",
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["config"]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+
+strict_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+
+exclude = ["venv", ".venv", "migrations"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[[tool.mypy.overrides]]
+module = "decouple"
+ignore_missing_imports = true

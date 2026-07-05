@@ -3,3 +3,7 @@ Django==5.2.7
 python-decouple
 django-widget-tweaks
 gunicorn>=26.0.0
+ruff
+mypy==1.14.1
+django-stubs==5.1.1
+pre-commit

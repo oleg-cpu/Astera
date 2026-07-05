@@ -1,13 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import ListView
-from django.views.generic import CreateView
-from django.views.generic import DetailView
-from django.views.generic import UpdateView
-from django.views.generic import DeleteView
-from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+
 from tasks.models import Task
+
 from .forms import TaskForm
+
 
 class TaskListView(LoginRequiredMixin, ListView):
     model = Task
@@ -15,9 +13,8 @@ class TaskListView(LoginRequiredMixin, ListView):
     context_object_name = "tasks"
 
     def get_queryset(self):
-        return self.model.objects.filter(user_id=self.request.user).order_by(
-            "creation_date"
-        )
+        return self.model.objects.filter(user_id=self.request.user).order_by("creation_date")
+
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
     model = Task
@@ -31,7 +28,6 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
-
     model = Task
     template_name = "tasks/task_detail.html"
 
@@ -49,7 +45,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
         return super().get_queryset().filter(user_id=self.request.user)
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView): # type: ignore[misc]
     model = Task
     template_name = "tasks/task_delete.html"
     success_url = reverse_lazy("task-list")

@@ -1,0 +1,50 @@
+# Ignore version control systems
+.git
+.gitignore
+.hg
+.svn
+
+# Ignore local package manager dependencies
+node_modules/
+bower_components/
+.venv/
+venv/
+env/
+.pypy/
+packages/
+.idea/
+
+# Ignore build artifacts and local caches
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+*.pyc
+__pycache__/
+
+# Ignore testing and coverage reports
+coverage/
+.nyc_output/
+htmlcov/
+.pytest_cache/
+
+# Ignore local environment configs and secret tokens
+.env
+.env.*
+*.local
+secrets.*
+*.pem
+*.key
+
+# Ignore operating system garbage
+.DS_Store
+Thumbs.db
+
+# Optionally ignore Docker configuration files
+Dockerfile
+.dockerignore
+
+# Terraform
+terraform/

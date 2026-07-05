@@ -1,0 +1,5 @@
+[webservers]
+ec2-instance ansible_host=YOUR_EC2_PUBLIC_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/YOUR_KEY.pem
+
+[webservers:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

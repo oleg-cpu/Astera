@@ -1,36 +1,88 @@
-# Astera
+# Astera Task Manager
 
-An asynchronous, database-driven Python backend application designed for structured data and task management. This project demonstrates clean coding practices, modern asynchronous database drivers, and structured architectural patterns.
+A production-ready Django Task Management application deployed on AWS infrastructure using modern DevOps practices, Infrastructure as Code (IaC), CI/CD, and Automated Configuration Management.
 
-## 🛠️ Tech Stack & Libraries
-* **Language:** Python 3.10+
-* **Database:** PostgreSQL
-* **ORM:** SQLAlchemy 2.0 (Asynchronous ORM)
-* **Database Driver:** `asyncpg` (High-performance async driver for PostgreSQL)
-* **Architecture:** Repository Pattern
+---
 
-## 🏗️ Architectural Features
-* **Asynchronous Execution:** Built from the ground up using `asyncio` and async database operations to handle concurrent processes efficiently without blocking.
-* **Repository Pattern:** Implements a clean separation of concerns. Business logic is completely decoupled from the data access layer (database queries), making the codebase highly maintainable and scalable.
-* **Session Management:** Utilizes SQLAlchemy's `async_sessionmaker` for reliable and secure database transaction management.
+## 🛠️ Tech Stack & Architecture
 
-## 📁 Project Structure Brief
-* `database/` — Contains database connection configuration, session makers, and engine setups.
-* `models/` — SQLAlchemy models defining the PostgreSQL database schema and relationships.
-* `repositories/` — The data access layer handling all CRUD operations and database interactions using asynchronous queries.
+* **Backend:** Python 3.13 / Django
+* **Database:** AWS RDS (PostgreSQL)
+* **Infrastructure (IaC):** Terraform (VPC, EC2, RDS, Security Groups)
+* **Configuration Management:** Ansible
+* **Containerization:** Docker & Docker Compose
+* **Reverse Proxy / Web Server:** Nginx
+* **CI/CD Pipeline:** GitHub Actions & GitHub Container Registry (GHCR)
+* **Cloud Provider:** AWS (Amazon Web Services)
 
-## 🚀 How to Run Locally
+---
 
-1. **Clone the repository:**
+## 🚀 CI/CD & Automated Quality Gate
+
+The project uses a GitHub Actions pipeline (`deploy.yml`) to enforce code quality before any deployment:
+1.  **Testing-and-Linting Job:** Runs Django unit tests using an isolated, fast in-memory SQLite database (`test_settings.py`) and checks code formatting via `pre-commit` (Ruff, Mypy).
+2.  **Build-and-Push Job:** If all tests and linters pass successfully, it builds the Docker image and pushes it to GHCR. Merges to the `main` branch automatically tag the image as `latest` for production use.
+
+---
+
+## ☁️ Cloud Deployment Guide (AWS)
+
+Follow this comprehensive guide to provision the infrastructure and configure/deploy the application to the AWS cloud.
+
+### 📋 Prerequisites
+* An AWS Account with configured CLI credentials.
+* Terraform installed locally.
+* Ansible installed (via Linux/WSL/macOS).
+* An SSH key pair registered in your AWS dashboard.
+
+### Step 1: Provision Infrastructure with Terraform
+1. Navigate to your `terraform/` directory.
+2. Initialize and apply the configuration:
+   ```bash
+   terraform init
+   terraform plan
+   terraform apply
+   ```
+### Step 2: Configure Ansible Deployment Variables
+1. Navigate to your `ansible/` directory.
+2. Create your deployment configuration secrets file named `secret_vars.yml` and paste the following block, replacing the placeholders with your actual AWS infrastructure and secure credentials:
+
 ```bash
-   git clone [https://github.com/oleg-cpu/Astera.git](https://github.com/oleg-cpu/Astera.git)
-   cd Astera
+django_secret_key: "your-super-secret-key-here"
+django_allowed_hosts: "YOUR_EC2_PUBLIC_IP_OR_DOMAIN"
+rds_db_name: "dbname"
+rds_db_user: "userdb"
+rds_db_password: "secure-password"
+rds_db_host: "YOUR_RDS_ENDPOINT_FROM_TERRAFORM_OUTPUT"
+rds_db_port: "5432"
+```
 
-2. **Set up a virtual environment**
-python -m venv venv
-source venv/bin/activate  # On Windows use: venv\Scripts\activate
+### Step 3: Configure Ansible Host Inventory
+1. In the same `ansible/` directory, create your server inventory file named hosts.ini.
+2. Paste the configuration block below, ensuring you provide your real EC2 instance IP and the local path to your AWS private SSH key (.pem file):
 
-3. **Install dependencies**
-Make sure you have your database drivers and SQLAlchemy installed.
+```bash
+[webservers]
+ec2-instance ansible_host=YOUR_EC2_PUBLIC_IP ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/YOUR_KEY.pem
 
-4. Configure your Database connection string in the database config files to point to your local PostgreSQL instance.
+[webservers:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+```
+### Step 4: Run the Deployment Playbook
+Execute Ansible to automatically install Docker, set up Nginx as a reverse proxy, inject your secrets, and spin up your application containers via `docker-compose`
+
+```bash
+ansible-playbook -i hosts.ini playbook.yml
+```
+
+### Local Development & Testing
+
+To run Django unit tests locally on your machine without needing a connection to the production PostgreSQL container or AWS RDS instance:
+```bash
+python manage.py test tasks --settings=config.test_settings
+```
+### Code Linting
+This project uses pre-commit hooks. To run formatting and code-quality checks manually across all files
+```bash
+pre-commit run --all-files
+```
